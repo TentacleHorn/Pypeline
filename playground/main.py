@@ -1,5 +1,4 @@
-import itertools
-from typing import List, Iterable
+from typing import Iterable
 
 from src.graph.operation.types.map import map_operation
 

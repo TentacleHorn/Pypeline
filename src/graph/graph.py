@@ -1,5 +1,4 @@
-from functools import cached_property
-from typing import Optional, Any, Callable, Iterable
+from typing import Any, Callable, Iterable
 
 import networkx
 from matplotlib import pyplot as plt

@@ -1,7 +1,6 @@
 import time
 
 import networkx as nx
-from matplotlib import pyplot as plt
 
 g = nx.path_graph(100000, create_using=nx.DiGraph)
 g: nx.DiGraph
