@@ -1,0 +1,7 @@
+networkx
+pydantic
+# visualization
+matplotlib
+
+#tests
+pytest
