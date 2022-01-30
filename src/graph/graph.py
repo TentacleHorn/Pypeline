@@ -1,3 +1,4 @@
+from functools import total_ordering
 from typing import Any, Callable
 
 import networkx
@@ -7,6 +8,7 @@ from pydantic import BaseModel
 from src.graph import tokens
 
 
+@total_ordering
 class FutureValue:
     def __init__(self, value: Any):
         token = tokens.create_value_token()
@@ -21,6 +23,9 @@ class FutureValue:
 
     def __eq__(self, other):
         return self.evaluate() == other
+
+    def __lt__(self, other):
+        return self.evaluate() < other
 
 
 class OperationProperties(BaseModel):
