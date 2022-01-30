@@ -1,4 +1,4 @@
-from typing import Any, Callable, Iterable
+from typing import Any, Callable
 
 import networkx
 from matplotlib import pyplot as plt
@@ -8,9 +8,8 @@ from src.graph import tokens
 
 
 class FutureValue:
-    def __init__(self, value: Any, token: int = None):
-        if token is None:
-            token = tokens.create_value_token()
+    def __init__(self, value: Any):
+        token = tokens.create_value_token()
         self.token = token
         self.value = value
 
@@ -20,10 +19,8 @@ class FutureValue:
     def evaluate(self):
         return get_default_graph().evaluate(self)
 
-
-class FutureValueTuple(FutureValue):
-    def __init__(self, value: Iterable, token: int = None):
-        super().__init__(value, token)
+    def __eq__(self, other):
+        return self.evaluate() == other
 
 
 class OperationProperties(BaseModel):
@@ -56,11 +53,13 @@ class ComputationGraph:
         """
         self.graph = networkx.DiGraph()
 
-    def add_value(self, future: FutureValue, parent_operation: Operation = None) -> None:
-        if parent_operation:
-            self.graph.add_edge(parent_operation.input, parent_operation.output)
-        else:
-            self.graph.add_node(future)
+    def add_value(self, future: FutureValue) -> None:
+        self.graph.add_node(future)
+
+        if isinstance(future.value, Operation):
+            op = future.value
+            for inp in op.input:
+                self.graph.add_edge(inp, future)
 
     def show(self) -> None:
         networkx.draw(self.graph)
@@ -68,18 +67,17 @@ class ComputationGraph:
 
     def evaluate(self, future: FutureValue) -> Any:
         # todo: no recursion
-        if not isinstance(future.value, (FutureValue, Operation)):
+        if not isinstance(future.value, Operation):
             return future.value
 
         pre = self.graph.predecessors(future)
         for p in pre:
-            self.evaluate(p)
-
-        if not isinstance(future.value, Operation):
-            raise NotImplemented
+            p.evaluate()
 
         op = future.value
-        out = op.op(op.input.value)
+        # unwrap inputs
+        raw_input = [i.value for i in op.input]
+        out = op.op(*raw_input)
         future.value = out
 
         return future.value

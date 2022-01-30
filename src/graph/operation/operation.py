@@ -1,46 +1,25 @@
 from typing import Any, Callable
 
-from pydantic import ByteSize
-
-from src.graph.graph import OperationProperties, Operation, FutureValue, get_default_graph, FutureValueTuple
-
-
-class PerformanceSpecs:
-    duration: float  # seconds
-    utilization: float  # 0 < x < 1
-    memory: ByteSize
-
-
-class DeviceSpecs:
-    memory: ByteSize
-    utilization: float
+from src.graph.graph import OperationProperties, Operation, FutureValue, get_default_graph
 
 
 def operation(f: Callable,
-              input: Any = None,
-              output: Any = None,
-              properties: OperationProperties = None,
-              cls=Operation):
+              properties: OperationProperties = None):
     if properties is None:
         properties = OperationProperties()
 
     def wrap(*args, **kwargs):
         graph = get_default_graph()
-        vis = []
+        wrapped_args = []
         for arg in args:
             if not isinstance(arg, FutureValue):
                 arg = FutureValue(arg)
                 graph.add_value(arg)
-            vis.append(arg)
+            wrapped_args.append(arg)
 
-        if len(vis) > 1:
-            arg = FutureValueTuple(vis)
-        else:
-            arg = vis[0]
-        op = cls(input=arg, output=None, op=f, properties=properties)
+        op = Operation(input=wrapped_args, output=None, op=f, properties=properties)
         out = FutureValue(op)
-        op.output = out
-        graph.add_value(out, parent_operation=op)
+        graph.add_value(out)
         return out
 
     return wrap

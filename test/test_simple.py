@@ -1,4 +1,3 @@
-from src.graph.graph import get_default_graph
 from src.graph.operation.operation import operation
 
 
@@ -14,17 +13,14 @@ def two_vars(x, y):
 
 def test_single():
     data = [1, 3, 5]
-
     data = my_op(data)
     data = my_op(data)
-    get_default_graph().show()
     data = data.evaluate()
-    print(f'final result {data}')
     assert data == [4, 12, 20]
 
 
 def test_two():
     x = two_vars(1, 3)
     x = two_vars(x, 3)
-    print(f'final result {x}')
+    x = x.evaluate()
     assert x == 9
