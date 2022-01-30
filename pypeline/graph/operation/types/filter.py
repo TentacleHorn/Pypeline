@@ -1,7 +1,7 @@
 import functools
 from typing import TypeVar, Iterable
 
-from src.graph.operation.operation import Operation, OperationProperties, operation
+from pypeline.graph.operation.operation import Operation, OperationProperties, operation
 
 IN = TypeVar('IN')
 

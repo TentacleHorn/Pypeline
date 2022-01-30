@@ -1,4 +1,4 @@
-from src import constant
+from pypeline import constant
 
 
 def test_auto_evaluate():

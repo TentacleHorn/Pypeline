@@ -5,7 +5,7 @@ import networkx
 from matplotlib import pyplot as plt
 from pydantic import BaseModel
 
-from src.graph import tokens
+from pypeline.graph import tokens
 
 
 @total_ordering

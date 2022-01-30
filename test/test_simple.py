@@ -1,4 +1,4 @@
-from src.graph.operation.operation import operation
+from pypeline.graph.operation.operation import operation
 
 
 @operation

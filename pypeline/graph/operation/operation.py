@@ -1,6 +1,6 @@
 from typing import Any, Callable
 
-from src.graph.graph import OperationProperties, Operation, FutureValue, get_default_graph
+from pypeline.graph.graph import OperationProperties, Operation, FutureValue, get_default_graph
 
 
 def operation(f: Callable,

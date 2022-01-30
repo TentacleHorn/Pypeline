@@ -1,6 +1,6 @@
 from typing import Iterable
 
-from src.graph.operation.types.map import map_operation
+from pypeline.graph.operation.types.map import map_operation
 
 
 @map_operation
