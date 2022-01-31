@@ -1,4 +1,4 @@
-from typing import Any, Callable
+from typing import Callable
 
 from pypeline.graph.graph import OperationProperties, Operation, FutureValue, get_default_graph
 
