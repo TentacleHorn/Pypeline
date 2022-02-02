@@ -1,7 +1,7 @@
 /test/.pytest_cache/
 /playground/
 /out/
-
+/venv/
 
 # Python
 # Byte-compiled / optimized / DLL files

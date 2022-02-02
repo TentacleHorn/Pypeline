@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+from abc import ABC, abstractmethod
 from functools import total_ordering
 from typing import Any, Callable
 
@@ -27,6 +30,9 @@ class FutureValue:
     def __lt__(self, other):
         return self.evaluate() < other
 
+    def __iter__(self):
+        return iter(self.evaluate())
+
 
 class OperationProperties(BaseModel):
     stateless: bool = False
@@ -49,14 +55,44 @@ class Operation:
         pass
 
 
-class ComputationGraph:
+class GraphExecutioner(ABC):
     def __init__(self):
+        pass
+
+    @abstractmethod
+    def execute(self, future: FutureValue, graph: ComputationGraph, ):
+        pass
+
+
+class NaiveExecutioner(GraphExecutioner):
+    def execute(self, future: FutureValue, graph: ComputationGraph):
+        # todo: no recursion
+        if not isinstance(future.value, Operation):
+            return future.value
+
+        pre = graph.graph.predecessors(future)
+        for p in pre:
+            p.evaluate()
+
+        op = future.value
+        # unwrap inputs
+        raw_input = [i.value for i in op.input]
+        out = op.op(*raw_input)
+        future.value = out
+
+
+class ComputationGraph:
+    def __init__(self, executioner=None):
         """
         ComputationGraph is a representation of any "work" that needs to be done.
         Nodes are the variables of the program.
         Edges are the method calls that generate variables.
         """
         self.graph = networkx.DiGraph()
+
+        if executioner is None:
+            executioner = NaiveExecutioner()
+        self.executioner: GraphExecutioner = executioner
 
     def add_value(self, future: FutureValue) -> None:
         self.graph.add_node(future)
@@ -71,22 +107,9 @@ class ComputationGraph:
         plt.savefig("./filename.png")
 
     def evaluate(self, future: FutureValue) -> Any:
-        # todo: no recursion
-        if not isinstance(future.value, Operation):
-            return future.value
-
-        pre = self.graph.predecessors(future)
-        for p in pre:
-            p.evaluate()
-
-        op = future.value
-        # unwrap inputs
-        raw_input = [i.value for i in op.input]
-        out = op.op(*raw_input)
-        future.value = out
-
+        self.executioner.execute(future, self)
         return future.value
-
+    
 
 def walk_backwards(g: networkx.DiGraph, node):
     queue = [node]
