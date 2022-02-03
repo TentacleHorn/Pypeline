@@ -6,6 +6,11 @@
 /dist/
 /venv/
 .eggs
+<<<<<<< Updated upstream
+=======
+*.egg*
+.eggs/
+>>>>>>> Stashed changes
 
 # C extensions
 *.so
