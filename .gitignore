@@ -1,12 +1,15 @@
-/test/.pytest_cache/
-/playground/
-/out/
-/venv/
-
 # Python
 # Byte-compiled / optimized / DLL files
 **/__pycache__/
 *.py[cod]
+/build/
+/dist/
+/venv/
+.eggs
 
 # C extensions
 *.so
+
+#Custom
+/test/.pytest_cache/
+/out/
