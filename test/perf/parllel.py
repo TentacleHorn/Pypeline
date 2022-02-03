@@ -1,6 +1,7 @@
 from time import sleep, time
 
 from pypeline.graph.operation.operation import operation
+from .helper import with_benchmark_test
 
 
 @operation
@@ -11,9 +12,10 @@ def do(x):
 @operation
 def do_batch(x: list):
 	for _ in x:
-		sleep(1)
+		sleep(0.1)
 
 
+@with_benchmark_test
 def test():
 	data = [0] * 10
 
@@ -22,3 +24,4 @@ def test():
 	data = data.evaluate()
 	duration = time() - s
 	print(f'duration: {duration}')
+	assert duration < 0.2
