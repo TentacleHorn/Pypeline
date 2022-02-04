@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import itertools
 from abc import ABC, abstractmethod
 from functools import total_ordering
 from typing import Any, Callable
@@ -75,9 +76,13 @@ class NaiveExecutioner(GraphExecutioner):
             p.evaluate()
 
         op = future.value
-        # unwrap inputs
-        raw_input = [i.value for i in op.input]
-        out = op.op(*raw_input)
+
+        unwrapped_args = [i.value if isinstance(i, FutureValue) else i
+                          for i in op.input.args]
+        unwrapped_kwargs = {k: (i.value if isinstance(i, FutureValue) else i)
+                            for k, i in op.input.kwargs.items()}
+
+        out = op.op(*unwrapped_args, **unwrapped_kwargs)
         future.value = out
 
 
@@ -99,8 +104,9 @@ class ComputationGraph:
 
         if isinstance(future.value, Operation):
             op = future.value
-            for inp in op.input:
-                self.graph.add_edge(inp, future)
+            for inp in itertools.chain(op.input.args, op.input.kwargs.values()):
+                if isinstance(inp, FutureValue):
+                    self.graph.add_edge(inp, future)
 
     def show(self) -> None:
         networkx.draw(self.graph)

@@ -1,6 +1,14 @@
+from collections.abc import Iterable
+from dataclasses import dataclass
 from typing import Callable
 
 from pypeline.graph.graph import OperationProperties, Operation, FutureValue, get_default_graph
+
+
+@dataclass
+class Input:
+    args: Iterable
+    kwargs: dict
 
 
 def operation(f: Callable,
@@ -10,14 +18,9 @@ def operation(f: Callable,
 
     def wrap(*args, **kwargs):
         graph = get_default_graph()
-        wrapped_args = []
-        for arg in args:
-            if not isinstance(arg, FutureValue):
-                arg = FutureValue(arg)
-                graph.add_value(arg)
-            wrapped_args.append(arg)
+        i = Input(args, kwargs)
 
-        op = Operation(input=wrapped_args, output=None, op=f, properties=properties)
+        op = Operation(input=i, output=None, op=f, properties=properties)
         out = FutureValue(op)
         graph.add_value(out)
         return out

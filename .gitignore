@@ -16,5 +16,5 @@
 *.so
 
 #Custom
-/test/.pytest_cache/
+/tests/.pytest_cache/
 /out/
