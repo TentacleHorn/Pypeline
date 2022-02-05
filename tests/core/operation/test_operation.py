@@ -11,8 +11,9 @@ def multi_kwargs(a=None, b=None):
 	return a * b
 
 
-def multi(a, b, optional=True):
-	return a * b
+def multi(a, b, double=False):
+	v = a * b
+	return v * 2 if double else v
 
 
 def test_args():
@@ -30,5 +31,5 @@ def test_kwargs():
 def test_multi():
 	x = multi(1, 3)
 	x = multi(x, b=3)
-	x = multi(x, 3, optional=True)
-	assert x == 27
+	x = multi(x, 3, double=True)
+	assert x == 54
