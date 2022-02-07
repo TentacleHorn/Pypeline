@@ -5,12 +5,12 @@
 /build/
 /dist/
 /venv/
-.eggs
 *.egg*
+.eggs/
 
 # C extensions
 *.so
 
 #Custom
-/test/.pytest_cache/
+/tests/.pytest_cache/
 /out/
