@@ -1,5 +1,6 @@
 import os
 from collections.abc import Callable
+from functools import wraps, partial
 
 from pypeline.perf.profile import benchmark
 
@@ -12,6 +13,7 @@ def with_benchmark(f: Callable, cache_dir: str) -> Callable:
 	:param cache_dir: a directory in which the benchmark will be cached
 	"""
 
+	@wraps(f)
 	def wrapper(*args, **kwargs):
 		# attempt to load from cache
 		cached = False

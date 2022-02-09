@@ -4,10 +4,10 @@ from collections.abc import Callable
 from pypeline.perf.util import with_benchmark
 
 OUT_DIR = r"C:\Users\User\PycharmProjects\GraphOptimizer\out"
-TEST_DIR = r"C:\Users\User\PycharmProjects\GraphOptimizer\test"
+TEST_DIR = r"C:\Users\User\PycharmProjects\GraphOptimizer\tests"
 
 
-def with_benchmark_test(f: Callable):
+def with_benchmark_unit(f: Callable):
 	import inspect
 	frm = inspect.stack()[1]
 	mod = inspect.getmodule(frm[0])

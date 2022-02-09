@@ -1,7 +1,9 @@
 from time import sleep, time
 
+import pytest
+
 from pypeline.graph.operation.operation import operation
-from .helper import with_benchmark_test
+from .helper import with_benchmark_unit
 
 
 @operation
@@ -15,7 +17,7 @@ def do_batch(x: list):
 		sleep(0.1)
 
 
-@with_benchmark_test
+@with_benchmark_unit
 def test():
 	data = [0] * 10
 
