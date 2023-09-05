@@ -1,0 +1,45 @@
+import logging
+import time
+from pathlib import Path
+from typing import Callable
+
+logger = logging.getLogger()
+
+
+def reload_method(method: Callable):
+	func_name = method.__code__.co_name
+	mod_name = method.__code__.co_filename
+	import importlib
+	m = Path(mod_name).name.split(".")[0]
+	m = importlib.import_module(m)
+	importlib.reload(m)
+	return getattr(m, func_name)
+
+
+def debugmagic(skip_return: bool = True, delay: float = 1, loop: bool = True):
+	def wrapper(function):
+		def wrap(*args, **kwargs):
+			nonlocal function
+			last_ts = -1
+			while True:
+				s = time.time()
+				actual = 0
+				if last_ts != -1:
+					catch_up = delay - (s - last_ts)
+					actual = max(catch_up, 0)
+					time.sleep(actual)
+				last_ts = s + actual
+
+				r = function(*args, **kwargs)
+				function = reload_method(function)
+				if not skip_return:
+					return r
+				if not loop:
+					break
+
+		return wrap
+
+	return wrapper
+
+
+debugmagic = debugmagic(loop=False, delay=0, skip_return=False)(debugmagic)
